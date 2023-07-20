@@ -9,3 +9,5 @@ uaclient_token_handler: false
 uaclient_token: ''
 
 uaclient_config_options: {}
+
+uaclient_service_list: []

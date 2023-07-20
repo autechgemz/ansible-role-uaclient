@@ -57,6 +57,12 @@ uaclient_token: ''
 uaclient_config_options: {}
 ```
 
+### uaclient_service_list: (list)
+
+```
+uaclient_service_list: []
+```
+
 ## Example vars
 
 ```
