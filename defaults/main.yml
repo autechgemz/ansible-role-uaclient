@@ -1,0 +1,11 @@
+---
+
+uaclient_debug: false
+
+uaclient_package_ensure: 'present'
+
+uaclient_token_handler: false
+
+uaclient_token: ''
+
+uaclient_config_options: {}

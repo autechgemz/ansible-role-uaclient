@@ -1,0 +1,46 @@
+---
+
+- name: Uaclient config tasks
+  become: true
+  tags:
+    - uaclient_config
+    - uaclient
+  block:
+
+    - name: Merge daemon configration
+      ansible.builtin.set_fact:
+        uaclient_config_merged: "{{ uaclient_config_default | ansible.builtin.combine(uaclient_config_options, recursive=True) }}"
+
+    - name: Manage uaclient config
+      ansible.builtin.template:
+        src: uaclient.conf.j2
+        dest: '/etc/ubuntu-advantage/uaclient.conf'
+        owner: 'root'
+        group: 'root'
+        mode: '0644'
+      notify: Uaclient refresh
+
+    - name: Attach subscription
+      when:
+        - uaclient_token_handler is defined and uaclient_token_handler
+        - uaclient_token is defined and uaclient_token
+        - not ansible_check_mode
+      ansible.builtin.shell:
+        set -o pipefail && ua status --format json | grep -qE 'This machine is not attached' && ua attach {{ uaclient_token }}
+      args:
+        executable: /bin/bash
+      register: uaclient_attach_result
+      changed_when: '"This machine is now attached" in uaclient_attach_result.stdout'
+      failed_when: false
+
+    - name: Detach subscription
+      when:
+        - uaclient_token_handler is defined and not uaclient_token_handler
+        - not ansible_check_mode
+      ansible.builtin.shell: >
+        set -o pipefail && ua status --format json | grep -qE 'Subscription:' || ua detach --assume-yes
+      args:
+        executable: /bin/bash
+      changed_when: '"This machine is now detached." in uaclient_detach_result.stdout'
+      register: uaclient_detach_result
+      failed_when: false

@@ -1,0 +1,13 @@
+---
+
+- name: Install tasks
+  become: true
+  tags:
+    - uaclient_install
+    - uaclient
+  block:
+    - name: Manage uaclient package
+      ansible.builtin.apt:
+        name: "{{ uaclient_package_name }}"
+        state: "{{ uaclient_package_ensure }}"
+        update_cache: true

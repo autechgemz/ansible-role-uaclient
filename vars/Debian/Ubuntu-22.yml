@@ -1,0 +1,9 @@
+---
+
+uaclient_package_name:
+  - 'ubuntu-advantage-tools'
+  - 'ca-certificates'
+
+uaclient_config_default:
+  contract_url: 'https://contracts.canonical.com'
+  log_level: 'debug'

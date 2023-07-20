@@ -1,0 +1,29 @@
+---
+
+- name: Service tasks
+  become: true
+  when: uaclient_service_list is defined and uaclient_service_list
+  tags:
+    - uaclient_service
+    - uaclient
+  block:
+    - name: Debug uaclient service list
+      when: uaclient_debug is defined and uaclient_debug
+      ansible.builtin.debug:
+        var: uaclient_service_list
+
+    - name: Enable uaclient service
+      when: item.service_enable is defined and item.service_enable
+      ansible.builtin.command: ua enable {{ item.service_name }}
+      with_items: "{{ uaclient_service_list }}"
+      register: uaclient_enable_results
+      changed_when: '"enabled" in uaclient_enable_results.stdout and uaclient_enable_results.rc == 0'
+      failed_when: false
+
+    - name: Disable uaclient service
+      when: item.service_enable is defined and not item.service_enable
+      ansible.builtin.command: ua disable {{ item.service_name }}
+      with_items: "{{ uaclient_service_list }}"
+      register: uaclient_disable_results
+      changed_when: uaclient_disable_results.rc == 0
+      failed_when: false

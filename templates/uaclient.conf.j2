@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+{% if uaclient_config_merged is defined and uaclient_config_merged %}
+{% for key, value in uaclient_config_merged.items() %}
+{{ key }}: {{ value }}
+{% endfor %}
+{% endif %}

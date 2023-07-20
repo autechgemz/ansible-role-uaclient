@@ -1,0 +1,8 @@
+---
+
+- name: Uaclient refresh
+  when: not ansible_check_mode
+  become: true
+  ansible.builtin.command: ua refresh config
+  register: uaclient_refresh_result
+  changed_when: '"Successfully processed" in uaclient_refresh_result.stdout'
